@@ -37,7 +37,13 @@ class _HomePageState extends State<HomePage> {
                       // TODO : Delete
                     },
                     child: CheckboxListTile(
-                      title: Text('${tasks[index].title}'),
+                      title: Text(
+                        '${tasks[index].title}',
+                        style: TextStyle(
+                            decoration: (tasks[index].completed!)
+                                ? TextDecoration.lineThrough
+                                : null),
+                      ),
                       onChanged: (bool? value) {
                         // TODO : update status
                       },

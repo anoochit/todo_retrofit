@@ -28,12 +28,21 @@ class _HomePageState extends State<HomePage> {
               child: ListView.builder(
                 itemCount: tasks.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return CheckboxListTile(
-                    title: Text('${tasks[index].title}'),
-                    onChanged: (bool? value) {
-                      // TODO : update status
+                  // swipe to delete task
+                  return Dismissible(
+                    key: UniqueKey(),
+                    background: Container(color: Colors.red),
+                    direction: DismissDirection.horizontal,
+                    onDismissed: (direction) {
+                      // TODO : Delete
                     },
-                    value: tasks[index].completed,
+                    child: CheckboxListTile(
+                      title: Text('${tasks[index].title}'),
+                      onChanged: (bool? value) {
+                        // TODO : update status
+                      },
+                      value: tasks[index].completed,
+                    ),
                   );
                 },
               ),

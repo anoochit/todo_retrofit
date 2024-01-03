@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todo_retrofit/main.dart';
 
+import '../services/todo.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -35,6 +37,14 @@ class _HomePageState extends State<HomePage> {
                     direction: DismissDirection.horizontal,
                     onDismissed: (direction) {
                       // TODO : Delete
+                      client.deleteTask('${tasks[index].id}').then((value) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Deleted!'),
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(milliseconds: 300),
+                        ));
+                      });
                     },
                     child: CheckboxListTile(
                       title: Text(
@@ -46,6 +56,17 @@ class _HomePageState extends State<HomePage> {
                       ),
                       onChanged: (bool? value) {
                         // TODO : update status
+                        client.updateTaskPart(tasks[index].id!,
+                            {'completed': value}).then((value) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text('Updated!'),
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(milliseconds: 300),
+                          ));
+                          // refresh
+                          setState(() {});
+                        });
                       },
                       value: tasks[index].completed,
                     ),
@@ -87,6 +108,26 @@ class _HomePageState extends State<HomePage> {
                 TextButton(
                   onPressed: () {
                     // TODO : save task
+                    if (formKey.currentState!.validate()) {
+                      client
+                          .createTask(
+                        Task(
+                          title: taskTextController.text.trim(),
+                          completed: false,
+                          createdAt: DateTime.now(),
+                        ),
+                      )
+                          .then((value) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Added!'),
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(milliseconds: 300),
+                        ));
+                        setState(() {});
+                      });
+                    }
                   },
                   child: const Text('Save'),
                 ),
